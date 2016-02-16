@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+        *** GENERATED FROM jax-ws.xml - DO NOT EDIT !                             ***
+        *** TO MODIFY wsimport options USE Web Service node -> Edit WS Attributes ***
+        *** TO CHANGE TARGETS GENERATED TO jaxws-build.xml COPY THOSE             ***
+        *** TARGETS TO ../build.xml AND MODIFY THAT FILE INSTEAD                  ***
+
+        --><project xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:xalan="http://xml.apache.org/xslt" xmlns:jaxws="http://www.netbeans.org/ns/jax-ws/1">
+    <!--
+                ===================
+                JAX-WS WSIMPORT SECTION
+                ===================
+            -->
+    <target name="wsimport-init" depends="init">
+        <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${libs.jaxws21.classpath}"/>
+        </taskdef>
+    </target>
+    <target name="wsimport-client-ServTimbrado" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/ServTimbrado"/>
+        <property name="wsdl-ServTimbrado" location="xml-resources/web-service-references/ServTimbrado/wsdl/intgtimbradorecepcion.cloudapp.net/ServTimbrado.svc.singlewsdl.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/ServTimbrado" destdir="${build.generated.dir}/jax-wsCache/ServTimbrado" wsdl="${wsdl-ServTimbrado}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="https://intgtimbradorecepcion.cloudapp.net/ServTimbrado.svc?singleWsdl" xnocompile="true" xendorsed="true" package="webservice" XadditionalHeaders="true">
+            <depends file="${wsdl-ServTimbrado}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/ServTimbrado"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/ServTimbrado">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-ServTimbrado" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/ServTimbrado"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/webservice"/>
+    </target>
+    <target name="wsimport-client-ServTimbradoCan" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/ServTimbradoCan"/>
+        <property name="wsdl-ServTimbradoCan" location="xml-resources/web-service-references/ServTimbradoCan/wsdl/intgtimbradocancelacion.cloudapp.net/ServTimbradoCan.svc.singlewsdl.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/ServTimbradoCan" destdir="${build.generated.dir}/jax-wsCache/ServTimbradoCan" wsdl="${wsdl-ServTimbradoCan}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="https://intgtimbradocancelacion.cloudapp.net/ServTimbradoCan.svc?singleWsdl" xnocompile="true" xendorsed="true" package="webservice_cancelacion" XadditionalHeaders="true">
+            <depends file="${wsdl-ServTimbradoCan}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/ServTimbradoCan"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/ServTimbradoCan">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-ServTimbradoCan" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/ServTimbradoCan"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/webservice_cancelacion"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-ServTimbrado, wsimport-client-ServTimbradoCan"/>
+</project>

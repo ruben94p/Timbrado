@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <definitions 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="mainclientconfig" 
+ xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+ xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+ xmlns:sc="http://schemas.sun.com/2006/03/wss/server"
+ xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy"
+ xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+ >
+<wsp:Policy wsu:Id="BasicHttpBinding_IAutenticacionPolicy">
+    <wsp:ExactlyOne>
+        <wsp:All>
+            <sc:KeyStore wspp:visibility="private" alias="fiel" keypass="prueba" storepass="prueba" type="JKS" location="prueba.jks"/>
+        </wsp:All>
+    </wsp:ExactlyOne>
+</wsp:Policy>
+
+
+ </definitions>

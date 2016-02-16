@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="https://intgtimbradorecepcion.cloudapp.net/ServTimbrado.svc?singleWsdl" uri="xml-resources/web-service-references/ServTimbrado/wsdl/intgtimbradorecepcion.cloudapp.net/ServTimbrado.svc.singlewsdl.wsdl"/>
+    <system systemId="https://intgtimbradocancelacion.cloudapp.net/ServTimbradoCan.svc?singleWsdl" uri="xml-resources/web-service-references/ServTimbradoCan/wsdl/intgtimbradocancelacion.cloudapp.net/ServTimbradoCan.svc.singlewsdl.wsdl"/>
+</catalog>
