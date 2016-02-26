@@ -4,9 +4,7 @@
  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="mainclientconfig" 
- xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy"
  >
-    <import location="Autenticacion.xml" namespace="http://tempuri.org/"/>
     <import location="ServTimbrado.svc.singlewsdl.xml" namespace="http://tempuri.org/"/>
     <import location="ServTimbradoCan.svc.singlewsdl.xml" namespace="http://tempuri.org/"/>
 </definitions>
