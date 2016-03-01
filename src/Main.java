@@ -20,6 +20,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import javax.xml.ws.Holder;
@@ -47,6 +48,7 @@ public class Main {
     private static String filePath = "archivo.xml";
     private static Holder<AcuseRespuestaServicio> holder = new Holder<>();
     
+    
     static void setProperties(){
         System.getProperties().put("javax.net.debug","all");
         System.getProperties().put("javax.net.ssl.keyStore", keystorePath);
@@ -61,20 +63,10 @@ public class Main {
         
         setProperties();
         Scanner scanner = new Scanner(System.in);
-//        
-//        String arg = "";
-//        do{
-//            arg = scanner.nextLine().toLowerCase();
-//            switch(arg){
-//                case "setPassword":
-//                    
-//                    break;
-//            }
-//        }while(!arg.toLowerCase().equals("exit") || arg.equals("") || arg == null);
         
+        //Se genera la keystore y truststore en caso de que no se encuentren
         if(checarKeyStore()){
             System.out.println("Existe keystore");
-            
         }else{
             System.out.println("No Existe keystore");
             System.out.println("Generando keystore");
@@ -85,11 +77,27 @@ public class Main {
                 e.printStackTrace();
             }
         }
+        
+        String arg = "";
+        do{
+            System.out.println("arg");
+            arg = scanner.nextLine().toLowerCase();
+            switch(arg){
+                case "crearcfdi":
+                    try{
+                    CFDI.generarCFDI(filePath);
+                    }catch(java.lang.Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }while(!arg.toLowerCase().equals("exit") || arg.equals("") || arg == null);
+       
 
         
         
         try{
-            generarCFDI(filePath);
+            //generarCFDI(filePath);
             /*Peticion peticion = new Peticion();            
             byte[] data = Files.readAllBytes(Paths.get(filePath));
             peticion.setArchivoATimbrar(data);
@@ -110,76 +118,7 @@ public class Main {
         return f.exists();
     }
     
-    static void generarCFDI(String file) throws java.lang.Exception{
-        ObjectFactory of = new ObjectFactory();
-        Comprobante comp = new Comprobante();
-        comp.setVersion("3.2");
-        comp.setFormaDePago("PAGO EN UNA SOLA EXHIBICION");
-        comp.setSubTotal(new BigDecimal("466.43"));
-        comp.setTotal(new BigDecimal("488.50"));
-        comp.setTipoDeComprobante("ingreso");
-        comp.setMetodoDePago("efectivo");
-        comp.setLugarExpedicion("Mexico");
-        comp.setFecha(new Date());
-        
-        //Receptor
-        comp.setReceptor(generarReceptor());
-        
-        //Emisor
-        comp.setEmisor(generarEmisor());
-        
-        CFDv32 cfd = new CFDv32(comp);
-        PrivateKey key = new PrivateKeyLoader(new FileInputStream("archivo.key"),  "password").getKey();
-        X509Certificate cert = new PublicKeyLoader((new FileInputStream("fiel.crt"))).getKey();
-        Comprobante sellado = cfd.sellarComprobante(key, cert);
-        cfd.validar(); 
-        cfd.verificar();
-        cfd.guardar(new FileOutputStream(file));
-    }
     
-    private static Receptor generarReceptor(){
-        Receptor receptor = new Receptor();
-        receptor.setNombre("JUAN PEREZ PEREZ");
-        receptor.setRfc("PEPJ8001019Q8");
-        TUbicacion uf = new TUbicacion();
-        uf.setCalle("AV UNIVERSIDAD");
-        uf.setCodigoPostal("04360");
-        uf.setColonia("COPILCO UNIVERSIDAD"); 
-        uf.setEstado("DISTRITO FEDERAL"); 
-        uf.setMunicipio("COYOACAN"); 
-        uf.setNoExterior("16 EDF 3"); 
-        uf.setNoInterior("DPTO 101"); 
-        uf.setPais("Mexico"); 
-        receptor.setDomicilio(uf);
-        return receptor;
-    }
-    
-    private static Emisor generarEmisor(){
-        Emisor emisor = new Emisor();
-        emisor.setNombre("PHARMA PLUS SA DE CV");
-        emisor.setRfc("PPL961114GZ1");
-        TUbicacionFiscal uf = new TUbicacionFiscal();
-        uf.setCalle("AV. RIO MIXCOAC");
-        uf.setCodigoPostal("03240");
-        uf.setColonia("ACACIAS"); 
-        uf.setEstado("DISTRITO FEDERAL"); 
-        uf.setMunicipio("BENITO JUAREZ"); 
-        uf.setNoExterior("No. 140"); 
-        uf.setPais("Mexico"); 
-        emisor.setDomicilioFiscal(uf);
-        TUbicacion u = new TUbicacion();
-        u.setCalle("AV. UNIVERSIDAD");
-        u.setCodigoPostal("03910");
-        u.setColonia("OXTOPULCO"); 
-        u.setEstado("DISTRITO FEDERAL");
-        u.setNoExterior("1858");
-        u.setPais("Mexico"); 
-        emisor.setExpedidoEn(u); 
-        RegimenFiscal rf = new RegimenFiscal();
-        rf.setRegimen("simplificado");
-        emisor.getRegimenFiscal().add(rf);
-        return emisor;
-    }
     
     private static void generarKeyStore() throws KeyStoreException,IOException, NoSuchAlgorithmException, CertificateException, NoSuchProviderException{
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
