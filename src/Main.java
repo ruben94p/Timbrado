@@ -23,6 +23,7 @@ import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import javax.xml.bind.JAXBElement;
 import javax.xml.ws.Holder;
 import mx.bigdata.sat.cfdi.CFDv32;
 import mx.bigdata.sat.cfdi.v32.schema.Comprobante;
@@ -35,7 +36,6 @@ import mx.bigdata.sat.cfdi.v32.schema.Comprobante.*;
 import mx.bigdata.sat.cfdi.v32.schema.Comprobante.Emisor.RegimenFiscal;
 import mx.bigdata.sat.cfdi.v32.schema.TUbicacion;
 import mx.bigdata.sat.cfdi.v32.schema.TimbreFiscalDigital;
-import sun.misc.BASE64Encoder;
 import webservice.*;
 import webservice_cancelacion.*;
 
@@ -46,7 +46,7 @@ public class Main {
     private static String rfc = "PPL961114GZ1";
     static String password = "prueba";
     private static String filePath = "archivo.xml";
-    private static Holder<AcuseRespuestaServicio> holder = new Holder<>();
+    private static Holder<AcuseRespuestaServicio> acuseRespuesta = new Holder<>();
     
     
     static void setProperties(){
@@ -72,6 +72,16 @@ public class Main {
             System.out.println("Generando keystore");
             try{
                 generarKeyStore();
+            }catch(java.lang.Exception e){
+                e.printStackTrace();
+            }
+        }
+        if(checarTrustStore()){
+            System.out.println("Existe truststore");
+        }else{
+            System.out.println("No Existe truststore");
+            System.out.println("Generando truststore");
+            try{
                 generarTrustStore();
             }catch(java.lang.Exception e){
                 e.printStackTrace();
@@ -80,37 +90,66 @@ public class Main {
         
         String arg = "";
         do{
-            System.out.println("arg");
+            System.out.print(">");
             arg = scanner.nextLine().toLowerCase();
             switch(arg){
+                case "filepath":
+                    System.out.println("Nuevo filepath");
+                    filePath = scanner.nextLine();
+                    break;
+                    
+                case "rfc":
+                    System.out.println("RFC");
+                    rfc = scanner.nextLine();
+                    break;
+                
                 case "crearcfdi":
                     try{
-                    CFDI.generarCFDI(filePath);
+                        CFDI.generarCFDI(filePath);
+                    }catch(java.lang.Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                    
+                case "timbrar":
+                    try{
+                        Peticion peticion = new Peticion();
+                        byte[] data = Files.readAllBytes(Paths.get(filePath));
+                        peticion.setArchivoATimbrar(data);
+                        timbrarRespStream(peticion);
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+                    catch(java.lang.Exception e){
+                        e.printStackTrace();
+                    }
+                    break;
+                    
+                    
+                case "descargartimbrar":
+                    try{
+                        PeticionString peticion = new PeticionString();
+                        //peticion.setRutaArchivo();
+                        descargarTimbrarRespStream(peticion);
+                    }catch(java.lang.Exception e){
+                        
+                    }
+                    break;
+                    
+                    
+                    
+                case "cancelar":
+                    try{
+                        PeticionCancelacionTimbrado peticion = new PeticionCancelacionTimbrado();
+                        //peticion.setPeticion();
+                        cancelar(peticion);
                     }catch(java.lang.Exception e){
                         e.printStackTrace();
                     }
                     break;
             }
-        }while(!arg.toLowerCase().equals("exit") || arg.equals("") || arg == null);
+        }while(!arg.toLowerCase().equals("salir") || arg.equals("") || arg == null);
        
-
-        
-        
-        try{
-            //generarCFDI(filePath);
-            /*Peticion peticion = new Peticion();            
-            byte[] data = Files.readAllBytes(Paths.get(filePath));
-            peticion.setArchivoATimbrar(data);
-            timbrarRespStream(peticion);*/
-//            PeticionString peticion = new PeticionString();
-//            JAXBElement<String> el = new JAXBElement<String>();
-//            peticion.setRutaArchivo();
-//            descargarTimbrarRespStream(peticion);
-            //cancelar(new PeticionCancelacionTimbrado());
-        
-        }catch(java.lang.Exception e){
-            e.printStackTrace();
-        }
     }
     
     static boolean checarKeyStore(){
@@ -118,7 +157,10 @@ public class Main {
         return f.exists();
     }
     
-    
+    static boolean checarTrustStore(){
+        File f = new File(truststorePath);
+        return f.exists();
+    }
     
     private static void generarKeyStore() throws KeyStoreException,IOException, NoSuchAlgorithmException, CertificateException, NoSuchProviderException{
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -153,7 +195,7 @@ public class Main {
         MessageHandlerResolver handlerResolver = new MessageHandlerResolver();
         service.setHandlerResolver(handlerResolver);
         IServTimbrado port = service.getEndPointRecibe();
-        return port.descargarTimbrarRespStream(parameters,rfc,holder);
+        return port.descargarTimbrarRespStream(parameters,rfc,acuseRespuesta);
     }
 
     private static Respuesta timbrarRespStream(Peticion parameters) throws java.lang.Exception {
@@ -161,7 +203,7 @@ public class Main {
         MessageHandlerResolver handlerResolver = new MessageHandlerResolver();
         service.setHandlerResolver(handlerResolver);
         IServTimbrado port = service.getEndPointRecibe();
-        return port.timbrarRespStream(parameters,rfc,holder);
+        return port.timbrarRespStream(parameters,rfc,acuseRespuesta);
     }
 
     private static RespuestaCancelacion cancelar(PeticionCancelacionTimbrado parameters) throws java.lang.Exception {
